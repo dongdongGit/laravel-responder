@@ -37,11 +37,11 @@ trait ConvertsExceptions
     /**
      * Convert an exception to another exception
      *
-     * @param  \Exception $exception
+     * @param  \Throwable $exception
      * @param  array      $convert
      * @return void
      */
-    protected function convert(Exception $exception, array $convert)
+    protected function convert(\Throwable $exception, array $convert)
     {
         foreach ($convert as $source => $target) {
             if ($exception instanceof $source) {
@@ -57,18 +57,18 @@ trait ConvertsExceptions
     /**
      * Convert a default exception to an API exception.
      *
-     * @param  \Exception $exception
+     * @param  \Throwable $exception
      * @return void
      */
-    protected function convertDefaultException(Exception $exception)
+    protected function convertDefaultException(\Throwable $exception)
     {
         $this->convert($exception, array_diff_key([
-            AuthenticationException::class => UnauthenticatedException::class,
-            AuthorizationException::class => UnauthorizedException::class,
-            NotFoundHttpException::class => PageNotFoundException::class,
-            ModelNotFoundException::class => PageNotFoundException::class,
+            AuthenticationException::class       => UnauthenticatedException::class,
+            AuthorizationException::class        => UnauthorizedException::class,
+            NotFoundHttpException::class         => PageNotFoundException::class,
+            ModelNotFoundException::class        => PageNotFoundException::class,
             BaseRelationNotFoundException::class => RelationNotFoundException::class,
-            ValidationException::class => function ($exception) {
+            ValidationException::class           => function ($exception) {
                 throw new ValidationFailedException($exception->validator);
             },
         ], array_flip($this->dontConvert)));
